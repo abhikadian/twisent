@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Real Time Python Sentiment Analysis">
+    <meta name="author" content="">
+
+    <title>Twisent</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link href="{% static "senti/css/home.css" %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static "senti/css/font-awesome.min.css" %}" rel="stylesheet">
+
+    <script type="text/javascript" src="//pubnub.github.io/eon/v/eon/0.0.10/eon.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="//pubnub.github.io/eon/v/eon/0.0.10/eon.css"/>
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Twisent - Real Time Twitter Sentiment Analysis</a>
+            </div>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav">
+
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Home</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Filters <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="demo" class="collapse">
+                            <li>
+                                <a href="#">Location</a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Twisent <small>Real Time Sentiment Analysis</small>
+                        </h1>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form action="#" method="get">
+                            <label for="search">Search </label>
+                            <div class="input-group">
+                            <input id="search" class="form-control" type="text" placeholder="Search a Keyword to begin" aceholder="" name="search" maxlength="140" required>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">Go!</button>
+                            </span>
+                            </div>
+                        </form>
+                    </div><br>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Area Chart</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="chart"></div><!-- PubNub Goes Here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        {% comment %}<div class="well">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i>Live Tweets</h3>
+                            </div>
+                            <div class="panel-body" id="liveTweets">
+
+                            </div>
+                        </div>
+                        </div>
+                        <div class="well">Live Tweets</div>{% endcomment %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i>Live Tweets</h3>
+                            </div>
+                            <div class="panel-body" id="liveTweets" style="overflow-y: scroll; height: 300px">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-long-arrow-right fa-fw"></i>Total Count</h3>
+                            </div>
+                            <div class="panel-body">
+                               <div id="displaytext" style="display: inline">Tweet Count : </div>
+                                <div id="displayCount" style="display: inline">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i>Top Trends</h3>
+                            </div>
+                            <div class="panel-body" id="latestTrends" >
+                                 {%  for t in trends %}
+                                     <li><a href="{{ t.url }}">{{ t.name }}</a></li>
+                                 {% endfor %}
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.0.9.min.js"></script>
+
+
+
+
+    <script>
+  var pubnub = PUBNUB.init({
+    publish_key:   'publish key', // replace with your own pub-key
+    subscribe_key: 'subscribe key' // replace with your own sub-key
+  });
+  var tweetText = ''
+  eon.chart({
+    pubnub: pubnub,
+    channel: "c3-bar", // the pubnub channel for real time data
+    debug: true,
+    flow: true,
+    generate: {           // c3 chart object
+      bindto: '#chart',
+        data:{
+            colors:{
+                'data':function (d) { return d.value < 0 ? '#d70060' : '#113f8c';}
+            },
+            type: "spline",
+            labels: true,
+            axis:{
+                y:{
+                    max:6,
+                    min:-6,
+                }
+            }
+        },
+        point: {
+            show: false
+        }
+    },
+      transform: function (m) {
+          var obj = JSON.parse(m)
+          tweetText = obj.tweet;
+          var div = document.getElementById('liveTweets');
+          var tweet_span = document.createElement('span');
+          var tweet_spanclass = tweet_span.setAttribute('class','tweetBoxCss');
+          var content = document.createTextNode(tweetText);
+          div.appendChild(tweet_span);
+          tweet_span.appendChild(content);
+          div.appendChild(document.createElement("br"));
+          div.scrollTop = div.scrollHeight;
+          tweetCount = obj.count;
+          document.getElementById('displayCount').innerHTML = tweetCount;
+          return{
+              eon: {
+
+                  'data': obj.data3,
+              }
+          }
+
+      }
+  });
+
+
+</script>
+
+</body>
+</html>
+
+
+
