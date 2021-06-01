@@ -4,6 +4,6 @@ gunicorn==19.6.0
 pubnub==3.8.2
 simplejson==3.8.2
 tweepy==3.5.0
-urllib3==1.13.1
+urllib3==1.26.5
 whitenoise==3.2
 psycopg2==2.6.1
